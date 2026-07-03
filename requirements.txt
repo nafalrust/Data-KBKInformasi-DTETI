@@ -1,0 +1,11 @@
+# Lihat PRD Data Engineering §7.1 untuk alasan tiap pilihan.
+httpx[http2]
+beautifulsoup4
+lxml
+scholarly
+pydantic>=2
+asyncpg
+sqlalchemy[asyncio]>=2
+python-dotenv
+apscheduler
+tenacity
