@@ -1,0 +1,443 @@
+[
+  {
+    "lecturer_row_ref": "dosen_source.csv:2",
+    "h_index": 13,
+    "total_citations": 721,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:3",
+    "h_index": 23,
+    "total_citations": 2883,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:4",
+    "h_index": 6,
+    "total_citations": 101,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:5",
+    "h_index": 6,
+    "total_citations": 117,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:6",
+    "h_index": 4,
+    "total_citations": 145,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:7",
+    "h_index": 3,
+    "total_citations": 28,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:8",
+    "h_index": 19,
+    "total_citations": 1323,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:9",
+    "h_index": 19,
+    "total_citations": 1952,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:10",
+    "h_index": 2,
+    "total_citations": 22,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:11",
+    "h_index": 19,
+    "total_citations": 1434,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:12",
+    "h_index": 19,
+    "total_citations": 1561,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:13",
+    "h_index": 19,
+    "total_citations": 1692,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:14",
+    "h_index": 16,
+    "total_citations": 979,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:15",
+    "h_index": 12,
+    "total_citations": 543,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:16",
+    "h_index": 12,
+    "total_citations": 598,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:17",
+    "h_index": 13,
+    "total_citations": 714,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:18",
+    "h_index": 8,
+    "total_citations": 261,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:19",
+    "h_index": 3,
+    "total_citations": 27,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:20",
+    "h_index": 17,
+    "total_citations": 1159,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:21",
+    "h_index": 4,
+    "total_citations": 78,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:22",
+    "h_index": 22,
+    "total_citations": 1894,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:23",
+    "h_index": 10,
+    "total_citations": 456,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:24",
+    "h_index": 27,
+    "total_citations": 3069,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:25",
+    "h_index": 13,
+    "total_citations": 734,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:26",
+    "h_index": 8,
+    "total_citations": 255,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:27",
+    "h_index": 6,
+    "total_citations": 137,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:28",
+    "h_index": 1,
+    "total_citations": 5,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:29",
+    "h_index": 3,
+    "total_citations": 18,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:30",
+    "h_index": 19,
+    "total_citations": 1318,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:31",
+    "h_index": 22,
+    "total_citations": 1985,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:32",
+    "h_index": 17,
+    "total_citations": 1752,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:34",
+    "h_index": 19,
+    "total_citations": 1599,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:35",
+    "h_index": 1,
+    "total_citations": 32,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:36",
+    "h_index": 7,
+    "total_citations": 145,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:37",
+    "h_index": 19,
+    "total_citations": 1400,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:38",
+    "h_index": 7,
+    "total_citations": 154,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:39",
+    "h_index": 6,
+    "total_citations": 143,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:40",
+    "h_index": 13,
+    "total_citations": 728,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:41",
+    "h_index": 3,
+    "total_citations": 26,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:42",
+    "h_index": 19,
+    "total_citations": 1153,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:43",
+    "h_index": 3,
+    "total_citations": 26,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:44",
+    "h_index": 14,
+    "total_citations": 663,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:45",
+    "h_index": 18,
+    "total_citations": 1422,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:46",
+    "h_index": 7,
+    "total_citations": 164,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:47",
+    "h_index": 11,
+    "total_citations": 412,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:48",
+    "h_index": 6,
+    "total_citations": 320,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:49",
+    "h_index": 4,
+    "total_citations": 31,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:50",
+    "h_index": 4,
+    "total_citations": 93,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:51",
+    "h_index": 12,
+    "total_citations": 1034,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:52",
+    "h_index": 11,
+    "total_citations": 371,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:53",
+    "h_index": 5,
+    "total_citations": 144,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:54",
+    "h_index": 6,
+    "total_citations": 103,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:55",
+    "h_index": 10,
+    "total_citations": 235,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:56",
+    "h_index": 9,
+    "total_citations": 351,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:57",
+    "h_index": 6,
+    "total_citations": 147,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:58",
+    "h_index": 14,
+    "total_citations": 581,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:59",
+    "h_index": 2,
+    "total_citations": 10,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:60",
+    "h_index": 3,
+    "total_citations": 26,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:61",
+    "h_index": 7,
+    "total_citations": 119,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:62",
+    "h_index": 4,
+    "total_citations": 97,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:63",
+    "h_index": 6,
+    "total_citations": 70,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:64",
+    "h_index": 5,
+    "total_citations": 114,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  },
+  {
+    "lecturer_row_ref": "dosen_source.csv:65",
+    "h_index": 6,
+    "total_citations": 93,
+    "sinta_score": null,
+    "source": "OPENALEX"
+  }
+]
