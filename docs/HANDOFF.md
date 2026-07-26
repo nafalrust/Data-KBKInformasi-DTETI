@@ -1,10 +1,9 @@
 # HANDOFF — Staging Data KBK TI (OpenAlex, Horizon A parsial)
 
 > **Status:** Handover sementara, **satu sumber saja (OpenAlex)**. Semantic Scholar,
-> CrossRef, Google Scholar, dan SINTA/Scopus/GARUDA menyusul — data di sini akan
+> CrossRef, Google Scholar, dan SINTA/Scopus/GARUDA menyusul. Data di sini akan
 > di-enrich/di-merge lagi, bukan final.
 > **Tanggal:** lihat `fetch_batch_id` di tabel `publications` untuk kapan data ini di-crawl.
-> **PIC Tim Data:** lihat kontak di README.md repo.
 
 ---
 
@@ -61,9 +60,3 @@ psql -d kbk_ti_staging -f sql/seed_vocabulary.sql
 # isi .env dengan DATABASE_URL mengarah ke kbk_ti_staging, lalu:
 python -m db.load_openalex_to_staging
 ```
-
-## 5. Kontak / Rujukan Lanjutan
-
-- Aturan normalisasi lengkap: `docs/CLEANING_NORMALIZATION_CONTRACT.md`
-- ERD: `sql/erd_kbk_data.md`
-- Rencana sumber tambahan & timeline: `DataSpecs-WebKBKProject.md` §4
