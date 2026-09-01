@@ -88,7 +88,7 @@ CREATE TABLE lecturer_metrics (
     h_index         INTEGER,
     total_citations INTEGER,
     sinta_score     NUMERIC,                          -- Post-MVP, NULL dulu di Horizon A
-    source          TEXT,                              -- OPENALEX / SINTA
+    source          TEXT,                              -- OPENALEX / SINTA / GOOGLE_SCHOLAR / SEMANTIC_SCHOLAR
     fetched_at      TIMESTAMPTZ DEFAULT now()
 );
 

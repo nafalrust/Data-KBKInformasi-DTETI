@@ -1,9 +1,15 @@
 from cleaners.normalize import (
+    extract_google_scholar_author_id,
+    extract_semantic_scholar_author_id,
     normalize_doi,
+    normalize_google_scholar_metrics,
+    normalize_google_scholar_publication,
     normalize_openalex_metrics,
     normalize_openalex_publication,
+    normalize_semantic_scholar_metrics,
+    normalize_semantic_scholar_publication,
 )
-from models.schemas import PublicationSource, PublicationType
+from models.schemas import MetricsSource, PublicationSource, PublicationType
 
 
 # ---- normalize_doi ----
@@ -139,3 +145,175 @@ def test_normalize_openalex_metrics_missing_fields():
 def test_normalize_openalex_metrics_none_author():
     assert normalize_openalex_metrics(None) is None
     assert normalize_openalex_metrics({}) is None
+
+
+# ---- normalize_google_scholar_publication ----
+
+def test_normalize_google_scholar_publication_full_data():
+    raw = {
+        "author_pub_id": "AbCdEfGh:xyz123",
+        "num_citations": 7,
+        "pub_url": "https://example.com/paper-gs",
+        "bib": {
+            "title": "A GScholar Study of Something",
+            "author": "Budi Santoso and Ani Wijaya",
+            "pub_year": "2021",
+            "venue": "Prosiding Seminar Nasional",
+            "journal": "Jurnal Ilmu Komputer",
+            "pub_type": "article",
+            "abstract": "Ringkasan singkat penelitian ini.",
+        },
+    }
+    pub = normalize_google_scholar_publication(raw, fetch_batch_id="batch1")
+    assert pub is not None
+    assert pub.title == "A GScholar Study of Something"
+    assert pub.authors_text == "Budi Santoso; Ani Wijaya"
+    assert pub.year == 2021
+    assert pub.venue == "Prosiding Seminar Nasional"
+    assert pub.publication_type == PublicationType.JOURNAL
+    assert pub.citation_count == 7
+    assert pub.abstract == "Ringkasan singkat penelitian ini."
+    assert pub.doi is None
+    assert pub.source == PublicationSource.GOOGLE_SCHOLAR
+    assert pub.external_ids["google_scholar"] == "AbCdEfGh:xyz123"
+    assert pub.fetch_batch_id == "batch1"
+
+
+def test_normalize_google_scholar_publication_missing_fields_rejected_or_none():
+    # No title -> reject
+    assert normalize_google_scholar_publication({"bib": {"author": "Someone"}}) is None
+
+    # No author -> reject
+    assert normalize_google_scholar_publication({"bib": {"title": "Some Title"}}) is None
+
+    # Minimal valid data -> optional fields None, not "" / 0
+    raw_minimal = {
+        "bib": {"title": "Minimal Paper", "author": "Someone"},
+    }
+    pub = normalize_google_scholar_publication(raw_minimal)
+    assert pub is not None
+    assert pub.doi is None
+    assert pub.year is None
+    assert pub.citation_count is None
+    assert pub.venue is None
+    assert pub.abstract is None
+    assert pub.publication_type == PublicationType.OTHER
+
+
+def test_normalize_google_scholar_publication_single_author_no_and_separator():
+    raw = {"bib": {"title": "Solo Paper", "author": "Budi Santoso"}}
+    pub = normalize_google_scholar_publication(raw)
+    assert pub is not None
+    assert pub.authors_text == "Budi Santoso"
+
+
+# ---- normalize_google_scholar_metrics ----
+
+def test_normalize_google_scholar_metrics_full():
+    raw_author = {"hindex": 9, "citedby": 250}
+    metrics = normalize_google_scholar_metrics(raw_author)
+    assert metrics is not None
+    assert metrics.h_index == 9
+    assert metrics.total_citations == 250
+    assert metrics.sinta_score is None
+    assert metrics.source == MetricsSource.GOOGLE_SCHOLAR
+
+
+def test_normalize_google_scholar_metrics_none_author():
+    assert normalize_google_scholar_metrics(None) is None
+    assert normalize_google_scholar_metrics({}) is None
+
+
+# ---- extract_google_scholar_author_id ----
+
+def test_extract_google_scholar_author_id():
+    assert extract_google_scholar_author_id({"scholar_id": "AbCdEfGh"}) == "AbCdEfGh"
+    assert extract_google_scholar_author_id(None) is None
+    assert extract_google_scholar_author_id({}) is None
+
+
+# ---- normalize_semantic_scholar_publication ----
+
+def test_normalize_semantic_scholar_publication_full_data():
+    raw = {
+        "paperId": "649def34f8be52c8b66281af98ae884c09aef38",
+        "title": "A Semantic Scholar Study of Something",
+        "year": 2023,
+        "publicationDate": "2023-04-01",
+        "authors": [{"name": "Budi Santoso"}, {"name": "Ani Wijaya"}],
+        "venue": "IEEE Access",
+        "publicationTypes": ["JournalArticle"],
+        "externalIds": {"DOI": "10.1109/ACCESS.2023.123456"},
+        "abstract": "Ringkasan penelitian ini.",
+        "citationCount": 4,
+    }
+    pub = normalize_semantic_scholar_publication(raw, fetch_batch_id="batch1")
+    assert pub is not None
+    assert pub.title == "A Semantic Scholar Study of Something"
+    assert pub.authors_text == "Budi Santoso; Ani Wijaya"
+    assert pub.year == 2023
+    assert pub.publication_date.isoformat() == "2023-04-01"
+    assert pub.venue == "IEEE Access"
+    assert pub.publication_type == PublicationType.JOURNAL
+    assert pub.doi == "10.1109/access.2023.123456"
+    assert pub.citation_count == 4
+    assert pub.abstract == "Ringkasan penelitian ini."
+    assert pub.source == PublicationSource.SEMANTIC_SCHOLAR
+    assert pub.external_ids["semantic_scholar"] == "649def34f8be52c8b66281af98ae884c09aef38"
+    assert pub.external_ids["doi"] == "10.1109/access.2023.123456"
+    assert pub.fetch_batch_id == "batch1"
+
+
+def test_normalize_semantic_scholar_publication_missing_fields_rejected_or_none():
+    # No title -> reject
+    assert normalize_semantic_scholar_publication({"authors": [{"name": "Someone"}]}) is None
+
+    # No authors -> reject
+    assert normalize_semantic_scholar_publication({"title": "Some Title", "authors": []}) is None
+
+    # Minimal valid data -> optional fields None, not "" / 0
+    raw_minimal = {"title": "Minimal Paper", "authors": [{"name": "Someone"}]}
+    pub = normalize_semantic_scholar_publication(raw_minimal)
+    assert pub is not None
+    assert pub.doi is None
+    assert pub.year is None
+    assert pub.citation_count is None
+    assert pub.venue is None
+    assert pub.abstract is None
+    assert pub.publication_type == PublicationType.OTHER
+
+
+def test_normalize_semantic_scholar_publication_unknown_type_maps_to_other():
+    raw = {
+        "title": "Some Paper",
+        "authors": [{"name": "Someone"}],
+        "publicationTypes": ["Editorial"],
+    }
+    pub = normalize_semantic_scholar_publication(raw)
+    assert pub is not None
+    assert pub.publication_type == PublicationType.OTHER
+
+
+# ---- normalize_semantic_scholar_metrics ----
+
+def test_normalize_semantic_scholar_metrics_full():
+    raw_author = {"hIndex": 11, "citationCount": 300}
+    metrics = normalize_semantic_scholar_metrics(raw_author)
+    assert metrics is not None
+    assert metrics.h_index == 11
+    assert metrics.total_citations == 300
+    assert metrics.sinta_score is None
+    assert metrics.source == MetricsSource.SEMANTIC_SCHOLAR
+
+
+def test_normalize_semantic_scholar_metrics_none_author():
+    assert normalize_semantic_scholar_metrics(None) is None
+    assert normalize_semantic_scholar_metrics({}) is None
+
+
+# ---- extract_semantic_scholar_author_id ----
+
+def test_extract_semantic_scholar_author_id():
+    assert extract_semantic_scholar_author_id({"authorId": "1741101"}) == "1741101"
+    assert extract_semantic_scholar_author_id(None) is None
+    assert extract_semantic_scholar_author_id({}) is None

@@ -1,13 +1,19 @@
-# ERD — KBK Informsi
+# ERD — KBK Informasi
+
+> **Catatan format:** dokumen ini adalah satu-satunya sumber definisi struktur tabel yang
+> diserahkan ke developer (nama kolom, tipe, constraint, relasi). Paket handoff **tidak
+> menyertakan file DDL/`.sql`/dump database** (kecuali `sql/seed_vocabulary.sql` yang
+> dianggap konfigurasi/vocabulary tetap) — semua data konkret diserahkan dalam CSV, lihat
+> `docs/HANDOFF.md`. Developer membuat DDL/migration sendiri berdasarkan dokumen ini.
 
 ## 1. Daftar Tabel & Status Data
 
 | Tabel | Status | Row count | Keterangan |
 |---|---|---|---|
-| `lecturers` | Terisi | 64 | Semua dosen dari `dosen_source.csv`; 63 berhasil ter-resolve ke OpenAlex Author, 1 belum |
-| `publications` | Terisi | 4165 | Hasil crawl OpenAlex, sudah dedup (DOI exact match / title+year similarity) |
-| `lecturer_publications` | Terisi | 6452 | Tabel penghubung many-to-many dosen ↔ publikasi |
-| `lecturer_metrics` | Terisi | 63 | h-index & total citations dari OpenAlex, snapshot terakhir |
+| `lecturers` | Terisi | 64 | Semua dosen dari `dosen_source.csv`; hasil resolve ke OpenAlex Author + Google Scholar profile |
+| `publications` | Terisi | — | Gabungan OpenAlex + Google Scholar, sudah dedup lintas sumber (DOI exact match / title+year similarity) |
+| `lecturer_publications` | Terisi | — | Tabel penghubung many-to-many dosen ↔ publikasi |
+| `lecturer_metrics` | Terisi | — | h-index & total citations, 1 baris/dosen — OpenAlex diprioritaskan, Google Scholar fallback |
 | `research_clusters` | Terisi | 5 | Seed vocabulary v1 |
 | `research_tags` | Terisi | 23 | Seed vocabulary v1 |
 | `lecturer_research_tags` | Draft tersedia | 337 (kandidat) | Kandidat hasil keyword-matching judul+abstract publikasi (lihat `exports/lecturer_research_tags_candidates.csv`) — **belum di-insert ke DB**, tunggu review manusia |
@@ -20,13 +26,13 @@
 
 ## 2. Dari Mana `id` (PK) Tiap Tabel Didapat
 
-Semua tabel dengan `id UUID PRIMARY KEY` (`lecturers`, `publications`, `research_clusters`, `research_tags`) **tidak** diisi manual oleh kode Python. DDL mendefinisikan:
+Semua tabel dengan `id` sebagai PK (`lecturers`, `publications`, `research_clusters`, `research_tags`) memakai tipe **UUID**, di-generate otomatis — bukan diisi manual oleh kode Python maupun angka urut manual. Kalau developer membuat tabelnya di Postgres, kolom `id` sebaiknya didefinisikan:
 
 ```sql
 id UUID PRIMARY KEY DEFAULT gen_random_uuid()
 ```
 
-`gen_random_uuid()` adalah fungsi bawaan Postgres (dari extension `pgcrypto`, diaktifkan di baris pertama `schema_staging.sql`). Saat `INSERT` dijalankan tanpa menyebut kolom `id`, Postgres sendiri yang generate UUID acak. Nilainya diambil kembali lewat `RETURNING id` di `db/crud.py`, lalu dipakai untuk mengisi tabel penghubung (`lecturer_publications`, dst).
+`gen_random_uuid()` adalah fungsi bawaan Postgres (perlu extension `pgcrypto` aktif: `CREATE EXTENSION IF NOT EXISTS pgcrypto;`). Di sisi Tim Data, pipeline (`pipeline.py`) meng-generate UUID lewat `uuid.uuid4()` di Python saat menulis `publications.csv` (kolom `id`) — kalau developer insert CSV ini apa adanya ke tabel dengan `id UUID PRIMARY KEY`, nilai UUID dari CSV itu yang dipakai, bukan digenerate ulang oleh DB.
 
 Dua tabel penghubung (`lecturer_publications`, `lecturer_research_tags`) **tidak punya kolom `id` sendiri** — PK-nya komposit dari dua foreign key (`PRIMARY KEY (lecturer_id, publication_id)` / `(lecturer_id, tag_id)`), bukan UUID baru.
 
@@ -48,9 +54,9 @@ Profil dasar dosen + ID lintas platform akademik.
 Satu baris = satu publikasi.
 - **PK:** `id` (UUID, auto)
 - **Constraint penting:** `doi` — `UNIQUE`, jadi kunci dedup utama lintas sumber
-- **`source`** selalu `'OPENALEX'` di batch ini
+- **`source`** — `'OPENALEX'` atau `'GOOGLE_SCHOLAR'` di batch ini (dua sumber aktif); publikasi yang sama dari kedua sumber sudah digabung sebelum sampai ke tabel ini, `source` menandai sumber pemenang setelah merge
 - **`verified_status`** selalu `'NEEDS_REVIEW'` — pipeline tidak pernah mengisi `VERIFIED`, itu keputusan manusia di layer review tim website
-- **`external_ids`** (JSONB) menyimpan ID OpenAlex + DOI, berguna untuk audit/dedup saat sumber lain (Semantic Scholar, CrossRef) ditambahkan nanti
+- **`external_ids`** (JSONB di DB; string JSON dalam satu sel di CSV) menyimpan ID lintas platform (`openalex`, `google_scholar`) + DOI, berguna untuk audit/dedup saat sumber lain (Semantic Scholar, CrossRef) ditambahkan nanti
 
 ### `lecturer_publications`
 Tabel penghubung many-to-many antara `lecturers` dan `publications` — satu dosen bisa menulis banyak publikasi, satu publikasi bisa multi-author dosen internal KBK.
@@ -59,6 +65,7 @@ Tabel penghubung many-to-many antara `lecturers` dan `publications` — satu dos
 ### `lecturer_metrics`
 Snapshot metrik akademik agregat per dosen (h-index, total citations), **bukan riwayat** — di-*upsert* ulang tiap sync, `fetched_at` menandai kapan terakhir diperbarui.
 - **PK:** `lecturer_id` (sekaligus FK ke `lecturers`) — relasi 1-to-1, satu dosen maksimal satu baris metrik
+- **`source`** — `'OPENALEX'` atau `'GOOGLE_SCHOLAR'`. Karena PK-nya cuma `lecturer_id` (bukan `(lecturer_id, source)`), tabel ini **tidak bisa menyimpan metrik dari 2 sumber sekaligus** untuk satu dosen — pipeline memprioritaskan OpenAlex, Google Scholar cuma dipakai kalau dosen itu tidak dapat metrik OpenAlex sama sekali (lihat `docs/HANDOFF.md` §3)
 - **`sinta_score`** masih `NULL` di Horizon A (kolom disiapkan untuk SINTA di Horizon B)
 
 ### `research_clusters`
@@ -113,11 +120,12 @@ Daftar asisten dosen (mahasiswa) per mata kuliah per periode akademik.
 
 ---
 
-## 5. Catatan Tambahan: Batch OpenAlex-only
+## 5. Catatan Tambahan: Batch OpenAlex + Google Scholar
 
-Detail lengkap ada di `docs/HANDOFF.md`. Ringkas:
+Detail lengkap dan tabel known-gaps ada di `docs/HANDOFF.md` §3. Ringkas:
 
 - `nip_or_staff_id` **bukan NIP asli** di batch ini — `dosen_source.csv` dari departemen tidak punya kolom NIP, jadi sementara diisi dengan nilai `sinta_id` sebagai placeholder supaya lolos constraint `NOT NULL`. Wajib diganti begitu NIP asli didapat.
-- 1 dosen ("Rr. Eny Sukani Rahayu") tidak berhasil di-*resolve* ke OpenAlex Author — `openalex_author_id IS NULL`, tidak ada baris `publications`/`lecturer_metrics` untuknya.
-- 32 dari 64 baris `lecturers` di-*resolve* lewat *name-search* fallback (bukan match by ID) — kurang akurat dibanding ORCID, sudah di-spot-check manual.
-- 840 dari 4165 baris `publications` punya `doi IS NULL` — bukan bug, sumber (OpenAlex) memang tidak menyediakan DOI untuk publikasi tersebut (umumnya publikasi lokal/lama).
+- 1 dosen ("Rr. Eny Sukani Rahayu") tidak berhasil di-*resolve* ke OpenAlex Author.
+- Sebagian baris `lecturers` di-*resolve* OpenAlex lewat *name-search* fallback (bukan match by ID) — kurang akurat dibanding ORCID, sudah di-spot-check manual.
+- Sebagian baris `publications` (OpenAlex) punya `doi` kosong — bukan bug, sumber memang tidak menyediakan DOI untuk publikasi tersebut (umumnya publikasi lokal/lama). Publikasi dari Google Scholar hampir semuanya tanpa DOI (keterbatasan sumber, bukan kesalahan pipeline).
+- Google Scholar tidak punya API resmi — fetcher-nya (`fetchers/google_scholar.py`) scraping via library `scholarly`, rawan rate-limit/captcha dibanding OpenAlex. Beberapa dosen bisa gagal fetch di satu batch run (`google_scholar_resolution_method = 'error'`) meski `google_scholar_id`-nya valid.

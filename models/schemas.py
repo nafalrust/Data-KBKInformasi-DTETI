@@ -29,6 +29,8 @@ class PublicationSource(str, Enum):
 class MetricsSource(str, Enum):
     OPENALEX = "OPENALEX"
     SINTA = "SINTA"
+    GOOGLE_SCHOLAR = "GOOGLE_SCHOLAR"
+    SEMANTIC_SCHOLAR = "SEMANTIC_SCHOLAR"
 
 
 class PublicationSchema(BaseModel):

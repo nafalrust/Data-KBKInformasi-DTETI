@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import httpx
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import Retrying, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 
 class RateLimiter:
@@ -46,19 +46,36 @@ def write_cache(source: str, key: str, data: Any, cache_dir: str = "raw_cache") 
 
 
 class HttpClient:
-    """Thin wrapper around httpx with retry + rate limiting for a single source."""
+    """Thin wrapper around httpx with retry + rate limiting for a single source.
 
-    def __init__(self, base_url: str, requests_per_second: float, timeout: float = 30.0, headers: Optional[dict] = None):
+    max_attempts dikonfigurasi per-instance (bukan hardcode) supaya sumber
+    yang API-nya kurang stabil / rate-limit ketat (mis. Semantic Scholar
+    tanpa API key) bisa diset gagal cepat per-request, tanpa memaksa OpenAlex
+    (yang jauh lebih stabil) ikut kurang toleran terhadap error transient.
+    """
+
+    def __init__(
+        self,
+        base_url: str,
+        requests_per_second: float,
+        timeout: float = 30.0,
+        headers: Optional[dict] = None,
+        max_attempts: int = 4,
+    ):
         self._client = httpx.Client(base_url=base_url, timeout=timeout, headers=headers or {})
         self._limiter = RateLimiter(requests_per_second)
+        self._max_attempts = max_attempts
 
-    @retry(
-        reraise=True,
-        stop=stop_after_attempt(4),
-        wait=wait_exponential(multiplier=1, min=1, max=20),
-        retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
-    )
     def get(self, path: str, params: Optional[dict] = None) -> httpx.Response:
+        retrying = Retrying(
+            reraise=True,
+            stop=stop_after_attempt(self._max_attempts),
+            wait=wait_exponential(multiplier=1, min=1, max=20),
+            retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
+        )
+        return retrying(self._get_once, path, params)
+
+    def _get_once(self, path: str, params: Optional[dict] = None) -> httpx.Response:
         self._limiter.wait()
         response = self._client.get(path, params=params)
         if response.status_code == 429 or response.status_code >= 500:
